@@ -2,38 +2,29 @@ pipeline {
 
     agent any
 
-    environment {
-        PATH = "C:\\Program Files\\Docker\\Docker\\resources\\bin;${env.PATH}"
-    }
-
     stages {
 
         stage('Check Docker') {
-
             steps {
                 bat 'docker --version'
             }
         }
 
-        stage('Build Docker Image') {
-
+        stage('Stop Existing Containers') {
             steps {
-                bat 'docker build -t weather-app .'
+                bat 'docker-compose down || exit 0'
             }
         }
 
-        stage('Stop Old Container') {
-
+        stage('Build Containers') {
             steps {
-                bat 'docker stop weather-container || exit 0'
-                bat 'docker rm weather-container || exit 0'
+                bat 'docker-compose build'
             }
         }
 
-        stage('Run Docker Container') {
-
+        stage('Run Containers') {
             steps {
-                bat 'docker run -d -p 8081:80 --name weather-container weather-app'
+                bat 'docker-compose up -d'
             }
         }
     }
