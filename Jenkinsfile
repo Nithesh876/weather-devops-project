@@ -6,25 +6,26 @@ pipeline {
 
         stage('Check Docker') {
             steps {
-                bat 'docker --version'
+                sh 'docker --version'
+                sh 'docker-compose --version'
             }
         }
 
         stage('Stop Existing Containers') {
             steps {
-                bat 'docker-compose down || exit 0'
+                sh 'docker-compose down || true'
             }
         }
 
         stage('Build Containers') {
             steps {
-                bat 'docker-compose build'
+                sh 'docker-compose build'
             }
         }
 
         stage('Run Containers') {
             steps {
-                bat 'docker-compose up -d'
+                sh 'docker-compose up -d'
             }
         }
     }
